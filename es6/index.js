@@ -21,8 +21,10 @@ export default function chute(...transforms) {
     },
 
     end() {
-      this.pipe.on('finish', emitFinish);
-      this.inputStream.end();
+      setTimeout( () => {
+        this.pipe.on('finish', emitFinish);
+        this.inputStream.end();
+      }, 10);
     },
 
     save(folder) {

@@ -91,11 +91,11 @@ describe('chute', function chuteTest() {
               c.push(`${__dirname}/fixtures/other.js`);
             }
             results.push(file.contents.toString('utf-8'));
-            cb(null, file);
+
+            cb();
           });
 
           c.push(`${__dirname}/fixtures/simple.js`);
-
 
           c.on('error', done);
           c.on('finish', () => {
@@ -105,7 +105,6 @@ describe('chute', function chuteTest() {
             ]);
             done();
           });
-
           c.end();
         });
 
