@@ -55,3 +55,6 @@ dist_test
 private
 init
 
+
+.DS_Store
+

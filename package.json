@@ -8,7 +8,10 @@
   "version": "1.0.0",
   "main": "dist/index.js",
   "dependencies": {
-    "babel-runtime": "^5.8.20"
+    "babel-runtime": "^5.8.20",
+    "multipipe": "^0.1.2",
+    "through2": "^2.0.0",
+    "vinyl-fs": "^1.0.0"
   },
   "author": "parro-it",
   "scripts": {
