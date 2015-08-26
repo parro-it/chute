@@ -6,7 +6,7 @@ if (process.env.TEST_RELEASE) {
 const chute = require(moduleRoot);
 import { readFileSync, unlinkSync, existsSync } from 'fs';
 
-describe('chute', function() {
+describe('chute', function chuteTest() {
   this.timeout(5000);
 
   it('is a function', () => {
@@ -63,6 +63,27 @@ describe('chute', function() {
           }).push(`${__dirname}/fixtures/simple.js`);
         });
 
+        it('could be called multiple time', done => {
+          const results = [];
+          const c = chute((file, enc, cb) => {
+            results.push(file.contents.toString('utf-8'));
+            cb(null, file);
+          })
+            .push(`${__dirname}/fixtures/simple.js`)
+            .push(`${__dirname}/fixtures/other.js`);
+
+          c.on('error', done);
+          c.on('finish', () => {
+            results.should.be.deep.equal([
+              'const response=42;\n',
+              'const other=42;\n'
+            ]);
+            done();
+          });
+
+          c.end();
+        });
+
         it('return chute instance for chaining', () => {
           const c = chute(() => {});
           const c2 = c.push(`${__dirname}/fixtures/simple.js`);
@@ -98,13 +119,15 @@ describe('chute', function() {
           c.save(`${__dirname}/output`);
           c.push(`${__dirname}/fixtures/simple.js`);
 
-          c.targetStream.on('error', done);
-          c.targetStream.on('finish', () => {
+          c.on('error', done);
+          c.on('saved', () => {
             const res = readFileSync(targetPath, 'utf-8');
             res.should.be.equal('CONST RESPONSE=42;\n');
             unlinkSync(targetPath);
             done();
           });
+
+          c.end();
         });
       });
     });
