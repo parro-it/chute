@@ -84,6 +84,31 @@ describe('chute', function chuteTest() {
           c.end();
         });
 
+        it('transformers could push other files', done => {
+          const results = [];
+          const c = chute((file, enc, cb) => {
+            if (file.path.includes('simple')) {
+              c.push(`${__dirname}/fixtures/other.js`);
+            }
+            results.push(file.contents.toString('utf-8'));
+            cb(null, file);
+          });
+
+          c.push(`${__dirname}/fixtures/simple.js`);
+
+
+          c.on('error', done);
+          c.on('finish', () => {
+            results.should.be.deep.equal([
+              'const response=42;\n',
+              'const other=42;\n'
+            ]);
+            done();
+          });
+
+          c.end();
+        });
+
         it('return chute instance for chaining', () => {
           const c = chute(() => {});
           const c2 = c.push(`${__dirname}/fixtures/simple.js`);
